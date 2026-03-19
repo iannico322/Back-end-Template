@@ -14,8 +14,17 @@ Follow these steps to set up the project locally on your machine.
 2. Open **phpMyAdmin** in your browser.
 3. Create a new database named `sample_db`.
 
+
 ### 3. Environment Setup
-Open your terminal and run the following commands to install dependencies and set up the virtual environment:
+Open your terminal and run the following commands to clone the repository and set up the environment:
+
+```bash
+# Clone the repository
+git clone <REPO_URL>
+cd ./Back-end-Template
+```
+
+Then install dependencies and set up the virtual environment:
 
 ```bash
 # Install pipenv globally
