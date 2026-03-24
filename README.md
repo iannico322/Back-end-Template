@@ -70,29 +70,32 @@ mkvirtualenv --python=/usr/bin/python3.9 venv
 ```bash
 cd /YOUR_REPO_NAME
 pip install -r requirements.txt
-```
 
-### 2. Database Setup
-1. Go to the **Databases** tab in PythonAnywhere.
-2. Create a new MySQL database and take note of your password.
-3. Note your database connection details (Example):
-   - **Database host address**: `YOUR_USERNAME.mysql.pythonanywhere-services.com`
-   - **Username**: `YOUR_USERNAME`
-4. Update your `settings.py` with these database credentials.
 
-### 3. Web App Configuration
-1. Go to the **Web** tab and create a new Web App (Manual Configuration, Python 3.9).
-2. Set the **Virtualenv** path to the one you just created (e.g., `venv`).
-3. Click on the **WSGI configuration file** link and update the Django section as follows:
+go to database create one
+create db, and remember password
+copy the Database host address: Zipfile.mysql.pythonanywhere-services.com
+Username:Zipfile
 
-```python
+
+create a webpage
+
+input venv on virtualenv:
+
+
+
+got to WSGI configuration file:
+update the file
+the Zipfile is your Bac
+
 # +++++++++++ DJANGO +++++++++++
 # To use your own django app use code like this:
 import os
 import sys
 
-# Set your project path
-path = '/home/YOUR_USERNAME/YOUR_REPO_NAME'
+# assuming your django settings file is at '/home/Zipfile/mysite/mysite/settings.py'
+# and your manage.py is is at '/home/Zipfile/mysite/manage.py'
+path = '/home/Zipfile/repo_name'
 if path not in sys.path:
     sys.path.append(path)
 
