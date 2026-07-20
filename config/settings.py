@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 
+import environ
 import django
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
@@ -19,23 +21,21 @@ django.utils.encoding.force_text = force_str
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^43&o!2c9yh)ewvg+ryjp4j5jap3b@i!55gjyq(4l-(l5s33#)'
+# Loaded from .env — never hardcode it here (see .env.example).
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = [
-    '192.168.1.7',
-    '127.0.0.1',
-    'localhost',
-    '0.0.0.0',
-  
-]
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
 #python manage.py 0.0.0.0:8000
 # Application definition
@@ -47,15 +47,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
     'djoser',
     'accounts',
     "corsheaders",
     'documents',
     'offices',
-    'gpass'
-
-
+    'gpass',
+    'rest_framework_simplejwt.token_blacklist',
 
 ]
 MIDDLEWARE = [
@@ -69,7 +67,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',  
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+# Wide-open CORS is fine while DEBUG (local dev), but a deployed instance must
+# only trust the origins it's actually serving a frontend from.
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
 
 
 ROOT_URLCONF = 'config.urls'
@@ -99,21 +100,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sample_db',
-        'USER':'root',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT':'3306',
-        
-        
+        'NAME': env('DB_NAME', default='erms_db'),
+        'USER': env('DB_USER', default='root'),
+        'PASSWORD': env('DB_PASSWORD', default=''),
+        'HOST': env('DB_HOST', default='localhost'),
+        'PORT': env('DB_PORT', default='3306'),
     }
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'itsyofficial69@gmail.com'
-EMAIL_HOST_PASSWORD = 'tmwwltyjlxiuudjx'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = True
 
 
@@ -163,15 +162,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':[
-      'rest_framework.permissions.IsAuthenticated',  
+      'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
 SIMPLE_JWT = {
-   'AUTH_HEADER_TYPES': ('Token',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 DJOSER = {
@@ -196,7 +200,11 @@ DJOSER = {
             'confirmation': 'accounts.email.ConfirmationEmail',
             'password_reset': 'accounts.email.PasswordResetEmail',
             'password_changed_confirmation': 'accounts.email.PasswordChangedConfirmationEmail',
-    }
+    },
+    # // if you want to public to create user just delete the code below
+     'PERMISSIONS': {
+        'user_create': ['rest_framework.permissions.IsAdminUser'],
+    },
     
 }
 

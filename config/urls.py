@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
+from rest_framework_simplejwt.views import TokenBlacklistView
 
 
 
@@ -25,8 +26,11 @@ urlpatterns = [
     path('api/v1/document/', include('documents.urls')),
     path('api/v1/gpass/', include('gpass.urls')),
     path('api/v1/office/', include('offices.urls')),
-    path('api/v1/', include('djoser.urls')),
-    path('api/v1/', include('djoser.urls.authtoken')),
-    path('api/v1/', include('djoser.social.urls')),
+    # Djoser + SimpleJWT auth endpoints, e.g. api/v1/auth/users/, api/v1/auth/jwt/create/
+    path('api/v1/auth/', include('djoser.urls')),
+    path('api/v1/auth/', include('djoser.urls.jwt')),
+    path('api/v1/auth/', include('djoser.social.urls')),
+    # Blacklists the refresh token so it can no longer be used to mint new access tokens
+    path('api/v1/auth/jwt/logout/', TokenBlacklistView.as_view(), name='jwt-logout'),
 ]
 

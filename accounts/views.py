@@ -1,18 +1,11 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from .serializers import UserCreateSerializer
-from rest_framework.generics import RetrieveUpdateAPIView
 from django.contrib.auth.hashers import make_password
-
-User = get_user_model()
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth import get_user_model
 from .serializers import UserCreateSerializer
+from .permissions import IsAccLevelAdmin
 
 User = get_user_model()
 
@@ -40,43 +33,58 @@ class UserDetailView(APIView):
 
 class ListUsersView(APIView):
     """
-    View to list all users in the system.
+    List/create users (no id in the URL, see accounts/urls.py `all/`) and
+    update/delete a specific user (id in the URL, see `update/<id>/`).
 
-    * Only superusers are able to access this view.
+    * Restricted to acc_lvl == 0 admins (or Django superusers).
     """
+    permission_classes = [IsAccLevelAdmin]
 
     def get(self, request, format=None):
         """
         Return a list of all users.
         """
-        # Check if the user is a superuser
-        if request.user.is_superuser:
-            users = User.objects.all()
-            serializer = UserCreateSerializer(users, many=True)
-            return Response(serializer.data)
-        else:
-            return Response({"detail": "You do not have permission to perform this action."},
-                            status=status.HTTP_403_FORBIDDEN)
+        users = User.objects.all().order_by('id')
+        serializer = UserCreateSerializer(users, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        """
+        Create a new user. Password strength is validated on the raw
+        password by the serializer; djoser's UserCreateSerializer hashes it
+        via create_user() when saving.
+        """
+        serializer = UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, id=None, format=None):
         """
         Update a user.
         """
-        # Check if the user is a superuser
-        if request.user.is_superuser:
-            user = User.objects.get(id=id)
-            data = request.data.copy()  # copy the request data
-
-            # Check if the password is in the request data
-            password = data.get('password')
+        user = get_object_or_404(User, id=id)
+        serializer = UserCreateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            # Validate the raw password above, then hash it before saving —
+            # ModelSerializer.update() doesn't call set_password() on its own.
+            password = serializer.validated_data.get('password')
             if password:
-                data['password'] = make_password(password)  # hash the password
+                serializer.validated_data['password'] = make_password(password)
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            serializer = UserCreateSerializer(user, data=data, partial=True)  # set partial=True to update a subset of the fields
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({"detail": "You do not have permission to perform this action."},
-                            status=status.HTTP_403_FORBIDDEN)
+    def delete(self, request, id=None, format=None):
+        """
+        Delete a user.
+        """
+        if request.user.id == id:
+            return Response(
+                {"detail": "You cannot delete your own account."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user = get_object_or_404(User, id=id)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
