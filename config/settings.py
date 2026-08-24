@@ -13,7 +13,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-import environ
 import django
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
@@ -21,21 +20,17 @@ django.utils.encoding.force_text = force_str
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Loaded from .env — never hardcode it here (see .env.example).
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = 'L1Znefd5KFqq8j2oRmaUIJ6oajpImFWoej_q90VFYWPhBawW8V1CDQO_ptjIqgZfzlg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = True
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
+ALLOWED_HOSTS = ['localhost', '192.168.18.125', '0.0.0.0']
 
 #python manage.py 0.0.0.0:8000
 # Application definition
@@ -67,10 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',  
 ]
 
-# Wide-open CORS is fine while DEBUG (local dev), but a deployed instance must
-# only trust the origins it's actually serving a frontend from.
-CORS_ALLOW_ALL_ORIGINS = DEBUG
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 ROOT_URLCONF = 'config.urls'
@@ -100,19 +92,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DB_NAME', default='erms_db'),
-        'USER': env('DB_USER', default='root'),
-        'PASSWORD': env('DB_PASSWORD', default=''),
-        'HOST': env('DB_HOST', default='localhost'),
-        'PORT': env('DB_PORT', default='3306'),
+        'NAME': 'test_db',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+EMAIL_HOST_USER = 'dict10.dms@gmail.com'
+EMAIL_HOST_PASSWORD = 'ajpzyujbwckoqmbh'
 EMAIL_USE_TLS = True
 
 
