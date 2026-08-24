@@ -24,12 +24,23 @@ git clone <REPO_URL>
 cd ./Back-end-Template
 
 # Create and activate a virtual environment
-python -m venv venv
-venv\Scripts\activate        # Windows
-# source venv/bin/activate   # macOS/Linux
+# Install pipenv globally
+pip install pipenv
+
+# Activate the virtual environment
+pipenv shell
+
+# Install project dependencies
+pipenv install
+pip install django 
+pip install -r requirements.txt
+pip install django-extensions
 
 # Install project dependencies
 pip install -r requirements.txt
+
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
 ```
 
 ### 4. Configuration
@@ -41,7 +52,6 @@ Once the dependencies are installed, migrate the database and start the server:
 ```bash
 # Run database migrations
 python manage.py migrate
-
 # Start the development server
 python manage.py runserver 0.0.0.0:8000
 ```
@@ -58,8 +68,15 @@ INSERT INTO `accounts_useraccount` (`id`, `password`, `last_login`, `is_superuse
 (1, 'pbkdf2_sha256$600000$b0Jc0HzaNEjlgo95x2Co5S$qDNW4xXSc+3QQ1eAzFqInCQRz2J4T0s9PAy9EwDUyoQ=', '2026-08-24 08:23:43.581439', 1, 'admin@gmail.com', 'admin', 'gwapo', 1, 1, 1, 'System Administrator', 5);
 ```
 
+
+
+
 ```bash
 python manage.py createsuperuser
 ```
 
-It will prompt for the `office` id you just inserted (usually `1`).
+```bash
+FRONT-END-Credentials
+username: admin@gmail.com
+password: ChangeMe123!
+```
