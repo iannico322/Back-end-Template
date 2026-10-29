@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DTS API Tester</title>
+<style>
+  body { font: 14px system-ui, sans-serif; margin: 0; background: #f4f5f7; color: #1a1a1a; }
+  header { background: #1f3a5f; color: #fff; padding: 10px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  header h1 { font-size: 16px; margin: 0 12px 0 0; }
+  header input { width: 280px; }
+  main { display: grid; grid-template-columns: 260px 1fr; gap: 12px; padding: 12px; }
+  @media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+  .card { background: #fff; border: 1px solid #d8dbe0; border-radius: 6px; padding: 10px; }
+  #list h3 { margin: 10px 0 4px; font-size: 12px; text-transform: uppercase; color: #667; }
+  #list button { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 5px 6px; cursor: pointer; border-radius: 4px; }
+  #list button:hover, #list button.active { background: #e6edf7; }
+  .m { display: inline-block; width: 52px; font-weight: 700; font-size: 11px; }
+  .GET { color: #1a7f37; } .POST { color: #b35900; } .PUT { color: #0a58ca; } .DELETE { color: #c62828; }
+  .row { display: flex; gap: 6px; margin-bottom: 8px; }
+  input, select, textarea { font: inherit; padding: 6px; border: 1px solid #b9bec7; border-radius: 4px; }
+  #path { flex: 1; }
+  textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, Consolas, monospace; min-height: 150px; }
+  button.send { background: #1f3a5f; color: #fff; border: 0; padding: 6px 18px; border-radius: 4px; cursor: pointer; }
+  details { margin: 8px 0; }
+  summary { cursor: pointer; margin-bottom: 4px; }
+  details pre { max-height: 220px; }
+  pre { background: #12161c; color: #d6e2f0; padding: 10px; border-radius: 4px; overflow: auto; max-height: 440px; margin: 0; white-space: pre-wrap; word-break: break-word; }
+  .status { font-weight: 700; margin: 8px 0 4px; }
+  .ok { color: #1a7f37; } .bad { color: #c62828; }
+  label { font-size: 12px; color: #556; }
+  small { color: #667; }
+</style>
+</head>
+<body>
+<header>
+  <h1>DTS API Tester</h1>
+  <label style="color:#cfe">Base URL <input id="base" value="http://localhost:8000/api/v1"></label>
+  <span id="tokenState"></span>
+  <button id="clear" type="button">Clear tokens</button>
+</header>
+<main>
+  <nav id="list" class="card"></nav>
+  <section class="card">
+    <div class="row">
+      <select id="method"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select>
+      <input id="path" placeholder="path, e.g. auth/users/me/">
+      <button class="send" id="send" type="button">Send</button>
+    </div>
+    <label><input type="checkbox" id="useAuth" checked> Send Authorization: Bearer &lt;access&gt;</label>
+    <p><label>JSON body</label></p>
+    <textarea id="body" spellcheck="false"></textarea>
+    <div class="status" id="status"></div>
+    <details open><summary><b>Request headers</b> <small>(what was sent)</small></summary><pre id="reqHeaders">(send a request)</pre></details>
+    <details><summary><b>Response headers</b></summary><pre id="resHeaders">(send a request)</pre></details>
+    <p><label>Response body</label></p>
+    <pre id="out">Pick a request on the left, then Send.
+Log in first (auth &rarr; login): access/refresh tokens are saved automatically.</pre>
+    <small>Backend must be running (python manage.py runserver). CORS is open in settings.py, so this file can be opened directly.</small>
+  </section>
+</main>
+<script>
+const user = { email: "user@example.com", first_name: "First", last_name: "Last", password: "Str0ng!Passw0rd", position: "Developer", office: 1, acc_lvl: 3 };
+const office = { name: "DICT 10", officeMail: "dict10office@gmail.com", street: "123 Office Street", city: "Cagayan de Oro", province: "Misamis Oriental", region: "10" };
+
+// [label, method, path, body, needsAuth]
+const groups = {
+  auth: [
+    ["login (jwt create)", "POST", "auth/jwt/create/", { email: "admin@gmail.com", password: "ChangeMe123!" }, false],
+    ["refresh access token", "POST", "auth/jwt/refresh/", "REFRESH", false],
+    ["verify access token", "POST", "auth/jwt/verify/", "VERIFY", false],
+    ["logout (blacklist refresh)", "POST", "auth/jwt/logout/", "REFRESH", false],
+    ["me", "GET", "auth/users/me/", null, true],
+    ["activate user", "POST", "auth/users/activation/", { uid: "MQ", token: "<token from email>" }, false],
+    ["reset password", "POST", "auth/users/reset_password/", { email: "user@example.com" }, false],
+    ["reset password confirm", "POST", "auth/users/reset_password_confirm/", { uid: "MQ", token: "<token from email>", new_password: "N3w!Passw0rd", re_new_password: "N3w!Passw0rd" }, false],
+    ["change password", "POST", "auth/users/set_password/", { current_password: "old", new_password: "N3w!Passw0rd", re_new_password: "N3w!Passw0rd" }, true],
+    ["create user (djoser, admin)", "POST", "auth/users/", user, true],
+  ],
+  "users (admin)": [
+    ["list users", "GET", "users/all/", null, true],
+    ["create user", "POST", "users/all/", user, true],
+    ["update user", "PUT", "users/update/1/", { first_name: "NewFirst", last_name: "NewLast", position: "Developer", office: 1, acc_lvl: 3 }, true],
+    ["delete user", "DELETE", "users/update/1/", null, true],
+    ["user summary by id", "GET", "users/user/1/", null, false],
+  ],
+  offices: [
+    ["list offices", "GET", "office/all/", null, false],
+    ["create office (admin)", "POST", "office/all/", office, true],
+    ["get office", "GET", "office/1/", null, false],
+    ["update office (admin)", "PUT", "office/1/", office, true],
+    ["delete office (admin)", "DELETE", "office/1/", null, true],
+  ],
+};
+
+const $ = (id) => document.getElementById(id);
+const store = {
+  get: (k) => { try { return localStorage.getItem(k) || ""; } catch { return ""; } },
+  set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} },
+};
+$("base").value = store.get("dts_base") || $("base").value;
+$("base").addEventListener("change", () => store.set("dts_base", $("base").value));
+
+function tokenState() { $("tokenState").textContent = store.get("dts_access") ? "● tokens saved" : "○ not logged in"; }
+$("clear").onclick = () => { store.set("dts_access", ""); store.set("dts_refresh", ""); tokenState(); };
+
+function fillBody(b) {
+  if (b === "REFRESH") b = { refresh: store.get("dts_refresh") };
+  if (b === "VERIFY") b = { token: store.get("dts_access") };
+  $("body").value = b ? JSON.stringify(b, null, 2) : "";
+}
+
+const list = $("list");
+for (const [group, items] of Object.entries(groups)) {
+  const h = document.createElement("h3");
+  h.textContent = group;
+  list.appendChild(h);
+  for (const [label, method, path, body, auth] of items) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.innerHTML = `<span class="m ${method}">${method}</span>${label}`;
+    b.onclick = () => {
+      list.querySelectorAll("button").forEach((x) => x.classList.remove("active"));
+      b.classList.add("active");
+      $("method").value = method;
+      $("path").value = path;
+      $("useAuth").checked = auth;
+      fillBody(body);
+    };
+    list.appendChild(b);
+  }
+}
+
+$("send").onclick = async () => {
+  const method = $("method").value;
+  const url = $("base").value.replace(/\/+$/, "") + "/" + $("path").value.replace(/^\/+/, "");
+  const headers = {};
+  const opts = { method, headers };
+  const text = $("body").value.trim();
+  if (text && method !== "GET") {
+    try { JSON.parse(text); } catch (e) { $("status").textContent = "Invalid JSON body: " + e.message; $("status").className = "status bad"; return; }
+    headers["Content-Type"] = "application/json";
+    opts.body = text;
+  }
+  const access = store.get("dts_access");
+  if ($("useAuth").checked && access) headers["Authorization"] = "Bearer " + access;
+
+  $("reqHeaders").textContent = [`${method} ${url}`, ...Object.entries(headers).map(([k, v]) => `${k}: ${v}`)].join(String.fromCharCode(10));
+  $("resHeaders").textContent = "";
+  $("status").className = "status";
+  $("status").textContent = "Sending...";
+  const t0 = performance.now();
+  try {
+    const res = await fetch(url, opts);
+    $("resHeaders").textContent = [...res.headers].map(([k, v]) => `${k}: ${v}`).join(String.fromCharCode(10));
+    const raw = await res.text();
+    let shown = raw, data = null;
+    try { data = JSON.parse(raw); shown = JSON.stringify(data, null, 2); } catch {}
+    $("status").textContent = `${res.status} ${res.statusText} · ${Math.round(performance.now() - t0)} ms`;
+    $("status").className = "status " + (res.ok ? "ok" : "bad");
+    $("out").textContent = shown || "(empty response)";
+    if (data && data.access) store.set("dts_access", data.access);
+    if (data && data.refresh) store.set("dts_refresh", data.refresh);
+    if ($("path").value.includes("jwt/logout") && res.ok) { store.set("dts_access", ""); store.set("dts_refresh", ""); }
+    tokenState();
+  } catch (e) {
+    $("status").textContent = "Request failed";
+    $("status").className = "status bad";
+    $("out").textContent = String(e) + "\n\nIs the server running and the Base URL correct?";
+  }
+};
+tokenState();
+</script>
+</body>
+</html>

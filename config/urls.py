@@ -23,8 +23,6 @@ from rest_framework_simplejwt.views import TokenBlacklistView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/users/', include('accounts.urls')),
-    path('api/v1/document/', include('documents.urls')),
-    path('api/v1/gpass/', include('gpass.urls')),
     path('api/v1/office/', include('offices.urls')),
     # Djoser + SimpleJWT auth endpoints, e.g. api/v1/auth/users/, api/v1/auth/jwt/create/
     path('api/v1/auth/', include('djoser.urls')),

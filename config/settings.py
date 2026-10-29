@@ -45,9 +45,7 @@ INSTALLED_APPS = [
     'djoser',
     'accounts',
     "corsheaders",
-    'documents',
     'offices',
-    'gpass',
     'rest_framework_simplejwt.token_blacklist',
 
 ]
@@ -92,7 +90,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test_db',
+        'NAME': 'backend_db',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

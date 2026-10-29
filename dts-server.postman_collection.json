@@ -7,837 +7,686 @@
 	},
 	"item": [
 		{
-			"name": "registration",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+			"name": "auth",
+			"item": [
+				{
+					"name": "login (jwt create)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/jwt/create/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"jwt",
+								"create",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"auth": {
+							"type": "noauth"
+						}
 					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"nicocaulin@gmail.com\",\r\n    \"first_name\":\"Ian Nico\",\r\n    \"last_name\":\"Caulin\",\r\n    \"position\": 1,\r\n    \"office\":0,\r\n    \"password\":\"@user322w\",\r\n    \"re_password\":\"@user322w\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/users/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"users",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "admin-get-all-users",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token e5a2413b8279e5ec86766f4982a3748732b9332d",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"nicocaulin@gmail.com\",\r\n    \"first_name\":\"Ian\",\r\n    \"position\": \"CyberSecurity\",\r\n    \"designation\":\"Regional\",\r\n    \"last_name\":\"Caulin\",\r\n    \"password\":\"@user322w\",\r\n    \"re_password\":\"@user322w\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/users/all",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "admin-get-update-user",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token 396346624f1f03bec1283c0f1492f6a00e06b2ed",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \"email\": \"markgilrusiana437@gmail.com\",\r\n        \"first_name\": \"FirstName\",\r\n        \"last_name\": \"NewLastName\",\r\n        \"password\": \"zero322w\",\r\n        \"position\": \"newposition\",\r\n        \"designation\": \"newdesignation\"\r\n    }"
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/users/update/26/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"update",
-						"26",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "activate-user",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"uid\":\"MQ\",\r\n    \"token\":\"bpmxq1-5a6c652a1f4cc8491ec598ff799d518b\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/users/activation/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"activation",
-						""
-					],
-					"query": [
+					"response": [],
+					"event": [
 						{
-							"key": "",
-							"value": null,
-							"disabled": true
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const d = pm.response.json();",
+									"if (d.access) pm.collectionVariables.set('access', d.access);",
+									"if (d.refresh) pm.collectionVariables.set('refresh', d.refresh);"
+								]
+							}
 						}
 					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "token/login",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				},
+				{
+					"name": "refresh access token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/jwt/refresh/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"jwt",
+								"refresh",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"auth": {
+							"type": "noauth"
+						}
 					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "JWT ",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"jomarGods@gmail.com\",\r\n    \"password\":\"@user322w\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/token/login/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"token",
-						"login",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "reset-password",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"iannicocaulin@gmail.com\"\r\n}"
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/users/reset_password/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"reset_password",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "change-password",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"uid\":\"MQ\",\r\n    \"token\":\"c33qiz-e8ce04e3c7c126ebe5b5453f7e7b2b91\",\r\n    \"new_password\":\"@pass322w\",\r\n    \"re_new_password\":\"@pass322w\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/users/reset_password_confirm/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"reset_password_confirm",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "login-user",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token e6b7440622c8ee6036ef9bbcd07b8321d38d2e60",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/users/me/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"me",
-						""
-					],
-					"query": [
+					"response": [],
+					"event": [
 						{
-							"key": "",
-							"value": null,
-							"disabled": true
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const d = pm.response.json();",
+									"if (d.access) pm.collectionVariables.set('access', d.access);",
+									"if (d.refresh) pm.collectionVariables.set('refresh', d.refresh);"
+								]
+							}
 						}
 					]
+				},
+				{
+					"name": "verify access token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/jwt/verify/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"jwt",
+								"verify",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"{{access}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout (blacklist refresh)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/jwt/logout/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"jwt",
+								"logout",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refresh}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/users/me/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"users",
+								"me",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activate user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/users/activation/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"users",
+								"activation",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"uid\": \"MQ\",\n  \"token\": \"<token from email>\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/users/reset_password/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"users",
+								"reset_password",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password confirm",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/users/reset_password_confirm/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"users",
+								"reset_password_confirm",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"uid\": \"MQ\",\n  \"token\": \"<token from email>\",\n  \"new_password\": \"N3w!Passw0rd\",\n  \"re_new_password\": \"N3w!Passw0rd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password (logged in)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/users/set_password/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"users",
+								"set_password",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"current_password\": \"old\",\n  \"new_password\": \"N3w!Passw0rd\",\n  \"re_new_password\": \"N3w!Passw0rd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create user (djoser, admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/users/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"users",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"first_name\": \"First\",\n  \"last_name\": \"Last\",\n  \"password\": \"Str0ng!Passw0rd\",\n  \"position\": \"Developer\",\n  \"office\": 1,\n  \"acc_lvl\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "document-create",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token e5a2413b8279e5ec86766f4982a3748732b9332d",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Absent mona ako\",\r\n    \"userID\":1,\r\n    \"type\":\"Letter\",\r\n    \"position\":\"CyberSecurity\",\r\n    \"requestor\": \"nicocaulin@gmail.com \",\r\n    \"to\": 2,\r\n    \"message\":\"absent lang sa\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "users (admin: acc_lvl 0)",
+			"item": [
+				{
+					"name": "list users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/all/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"all",
+								""
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/document/all/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"document",
-						"all",
-						""
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
+				{
+					"name": "create user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/all/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"all",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"first_name\": \"First\",\n  \"last_name\": \"Last\",\n  \"password\": \"Str0ng!Passw0rd\",\n  \"position\": \"Developer\",\n  \"office\": 1,\n  \"acc_lvl\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/update/1/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"update",
+								"1",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"NewFirst\",\n  \"last_name\": \"NewLast\",\n  \"position\": \"Developer\",\n  \"office\": 1,\n  \"acc_lvl\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/update/1/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user summary by id (public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/user/1/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"user",
+								"1",
+								""
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "document-update",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token 396346624f1f03bec1283c0f1492f6a00e06b2ed",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \"id\": 10,\r\n        \"userID\": 26,\r\n        \"title\": \"Excuse me Later\",\r\n        \"type\": \"Birtday\",\r\n        \"requestor\": \"Angel Naval\",\r\n        \"to\": 1,\r\n        \"position\": \"Officer 202\",\r\n        \"message\": \"sdsad\",\r\n        \"remarks\": \"ok\",\r\n        \"datesubmitted\": \"2024-04-23\",\r\n        \"signedBy\": 2,\r\n        \"status\": \"Received\"\r\n    }",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "offices",
+			"item": [
+				{
+					"name": "list offices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/office/all/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"office",
+								"all",
+								""
+							]
+						},
+						"auth": {
+							"type": "noauth"
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/document/2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"document",
-						"2"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
+				{
+					"name": "create office (admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/office/all/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"office",
+								"all",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"DICT 10\",\n  \"officeMail\": \"dict10office@gmail.com\",\n  \"street\": \"123 Office Street\",\n  \"city\": \"Cagayan de Oro\",\n  \"province\": \"Misamis Oriental\",\n  \"region\": \"10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "get office",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/office/1/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"office",
+								"1",
+								""
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update office (admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/office/1/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"office",
+								"1",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"DICT 10\",\n  \"officeMail\": \"dict10office@gmail.com\",\n  \"street\": \"123 Office Street\",\n  \"city\": \"Cagayan de Oro\",\n  \"province\": \"Misamis Oriental\",\n  \"region\": \"10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete office (admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/office/1/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"office",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000/api/v1"
 		},
 		{
-			"name": "document-delete",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token 396346624f1f03bec1283c0f1492f6a00e06b2ed",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \r\n    \"title\": \"Work From Home Request\",\r\n    \"type\":\"Letter\",\r\n    \"requestor\": \"John Doe\",\r\n    \"doctype\": \"Work From Home\",\r\n    \"message\":\"Blabla\",\r\n    \"remarks\":\"Nice\",\r\n    \"datesubmitted\": \"April 15, 2024\",\r\n    \"status\": \"accepted\"\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/document/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"document",
-						"1"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
+			"key": "access",
+			"value": ""
 		},
 		{
-			"name": "document-view-by-t#",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token 396346624f1f03bec1283c0f1492f6a00e06b2ed",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \r\n    \"title\": \"Work From Home Request\",\r\n    \"type\":\"Letter\",\r\n    \"requestor\": \"John Doe\",\r\n    \"doctype\": \"Work From Home\",\r\n    \"message\":\"Blabla\",\r\n    \"remarks\":\"Nice\",\r\n    \"datesubmitted\": \"April 15, 2024\",\r\n    \"status\": \"accepted\"\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/document/tracknumber/DOC2024001",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"document",
-						"tracknumber",
-						"DOC2024001"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "admin-document-view-all",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token f913dd754df1226150663faa74cd8346f2e9df64",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \r\n    \"title\": \"Work From Home Request\",\r\n    \"type\":\"Letter\",\r\n    \"requestor\": \"John Doe\",\r\n    \"doctype\": \"Work From Home\",\r\n    \"message\":\"Blabla\",\r\n    \"remarks\":\"Nice\",\r\n    \"datesubmitted\": \"April 15, 2024\",\r\n    \"status\": \"accepted\"\r\n\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/document/all/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"document",
-						"all",
-						""
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "user-document-view-all-by-user",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token 0a8bc5fce903f6608b5c985556c9a47edb6c8819",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/document/user/17",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"document",
-						"user",
-						"17"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "user-document-view-byOffice",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token 7a2d87681714b3e7689279cd29033a29007c9373",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/document/by_office/2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"document",
-						"by_office",
-						"2"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "admin-offices-view-all",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token e5a2413b8279e5ec86766f4982a3748732b9332d",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"DICT 10\",\r\n    \"address\": \"123 Office Street\",\r\n    \"officeMail\": \"dict10office@gmail.com\",\r\n    \"status\": 1,\r\n    \"region\": 10\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/office/all/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"office",
-						"all",
-						""
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "admin-offices-create",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token e5a2413b8279e5ec86766f4982a3748732b9332d",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"DICT 9\",\r\n    \"address\": \"123 Office Street\",\r\n    \"officeMail\": \"dict10office@gmail.com\",\r\n    \"status\": 1,\r\n    \"region\": 9\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/office/all/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"office",
-						"all",
-						""
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
+			"key": "refresh",
+			"value": ""
 		}
 	]
 }
